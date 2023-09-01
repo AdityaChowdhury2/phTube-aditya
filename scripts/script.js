@@ -12,7 +12,6 @@ const handleSort = () => {
 
 const toggleLoadingBars = (isLoading) => {
     const loadingBars = document.getElementById('loading-bars');
-
     isLoading && loadingBars.classList.remove('hidden');
     !isLoading && loadingBars.classList.add('hidden');
 }
@@ -60,7 +59,7 @@ const loadVideos = async (categoryId, isSort) => {
     const noContentDiv = document.createElement('div');
     noContentDiv.innerHTML = `
         <img src='images/Icon.png'>
-        <h2 class='font-bold text-3xl'>Oops!! Sorry, There is no content here.</h2> 
+        <h2 class='font-bold text-3xl mt-5'>Oops!! Sorry, There is no content here.</h2> 
     `
     noContentDiv.classList = 'mt-52 flex flex-col items-center text-center';
 
@@ -101,10 +100,6 @@ const loadVideos = async (categoryId, isSort) => {
         })
         : noContentContainer.appendChild(noContentDiv)
     toggleLoadingBars(false)
-
-
-
-
 
 };
 loadCategories(isSort);
