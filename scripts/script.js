@@ -1,9 +1,11 @@
 
 const videoContainer = document.getElementById('video-container');
 const categoryContainer = document.getElementById('category-container');
+const noContentContainer = document.getElementById('no-content-container');
+
+let isSort = false;
 
 const handleSort = () => {
-    let isSort = false;
     isSort = !isSort;
     loadCategories(isSort);
 }
@@ -33,6 +35,7 @@ const loadCategories = async (isSort) => {
             e.target.parentElement.querySelector('.tab-active').classList.remove('tab-active', 'bg-primary-color', 'text-white', 'border-none', 'hover:bg-dark-primary-color')
             e.target.classList.add('tab-active', 'bg-primary-color', 'text-white', 'border-none', 'hover:bg-dark-primary-color');
             videoContainer.innerText = '';
+            noContentContainer.innerText = '';
             loadVideos(category.category_id, isSort)
         };
         categoryContainer.appendChild(a);
@@ -52,12 +55,8 @@ const loadVideos = async (categoryId, isSort) => {
     const data = await res.json();
     const videos = data.data;
 
-
     videoContainer.innerText = '';
 
-    const noContentContainer = document.getElementById('no-content-container');
-
-    noContentContainer.innerText = '';
     const noContentDiv = document.createElement('div');
     noContentDiv.innerHTML = `
         <img src='images/Icon.png'>
@@ -108,7 +107,7 @@ const loadVideos = async (categoryId, isSort) => {
 
 
 };
-loadCategories(false);
+loadCategories(isSort);
 
 
 const fixTime = (sec) => {
