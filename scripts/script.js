@@ -1,15 +1,27 @@
-let isSort = false;
+
+const videoContainer = document.getElementById('video-container');
+const categoryContainer = document.getElementById('category-container');
 
 const handleSort = () => {
+    let isSort = false;
     isSort = !isSort;
     loadCategories(isSort);
 }
+
+const toggleLoadingBars = (isLoading) => {
+    const loadingBars = document.getElementById('loading-bars');
+
+    isLoading && loadingBars.classList.remove('hidden');
+    !isLoading && loadingBars.classList.add('hidden');
+}
+
 const loadCategories = async (isSort) => {
+    toggleLoadingBars(true)
     const res = await fetch('https://openapi.programming-hero.com/api/videos/categories')
     const data = await res.json();
     const categories = data.data;
 
-    const categoryContainer = document.getElementById('category-container');
+
     categoryContainer.innerText = ''
     categories.forEach((category) => {
         const a = document.createElement('a');
@@ -20,10 +32,12 @@ const loadCategories = async (isSort) => {
         a.onclick = (e) => {
             e.target.parentElement.querySelector('.tab-active').classList.remove('tab-active', 'bg-primary-color', 'text-white', 'border-none', 'hover:bg-dark-primary-color')
             e.target.classList.add('tab-active', 'bg-primary-color', 'text-white', 'border-none', 'hover:bg-dark-primary-color');
+            videoContainer.innerText = '';
             loadVideos(category.category_id, isSort)
         };
         categoryContainer.appendChild(a);
     })
+    toggleLoadingBars(false)
 
     categoryContainer.firstElementChild.classList.add('tab-active', 'bg-primary-color', 'text-white', 'border-none', 'hover:bg-dark-primary-color');
 
@@ -32,12 +46,13 @@ const loadCategories = async (isSort) => {
 
 
 const loadVideos = async (categoryId, isSort) => {
-    // console.log('Clicked', categoryId);
+
+    toggleLoadingBars(true)
     const res = await fetch(`https://openapi.programming-hero.com/api/videos/category/${categoryId}`)
     const data = await res.json();
     const videos = data.data;
 
-    const videoContainer = document.getElementById('video-container');
+
     videoContainer.innerText = '';
 
     const noContentContainer = document.getElementById('no-content-container');
@@ -49,7 +64,7 @@ const loadVideos = async (categoryId, isSort) => {
         <h2 class='font-bold text-3xl'>Oops!! Sorry, There is no content here.</h2> 
     `
     noContentDiv.classList = 'mt-52 flex flex-col items-center text-center';
-    console.log(isSort);
+
     isSort && videos.sort((a, b) => b.others.views.slice(0, -1) - a.others.views.slice(0, -1))
 
     videos.length ?
@@ -81,24 +96,23 @@ const loadVideos = async (categoryId, isSort) => {
         </div>
     </div>
 `
-            // console.log(authors[0]?.verified === true, authors[0].profile_name);
+
             videoContainer.appendChild(div);
+
         })
         : noContentContainer.appendChild(noContentDiv)
-
+    toggleLoadingBars(false)
 
 
 
 
 
 };
-loadCategories(isSort);
+loadCategories(false);
 
 
 const fixTime = (sec) => {
     const hours = Math.trunc(sec / 3600);
     const mins = Math.trunc((sec % 3600) / 60);
-    return `${hours}hrs ${mins}mins ago`;
-    // console.log(`${ hours }hrs ${ mins }mins ago`);
+    return `${hours}hrs ${mins} min ago`;
 }
-
