@@ -5,8 +5,14 @@ const noContentContainer = document.getElementById('no-content-container');
 
 let isSort = false;
 
+const clearScreen = () => {
+    videoContainer.innerText = '';
+    noContentContainer.innerText = '';
+}
+
 const handleSort = () => {
     isSort = !isSort;
+    clearScreen()
     loadCategories(isSort);
 }
 
@@ -22,7 +28,6 @@ const loadCategories = async (isSort) => {
     const data = await res.json();
     const categories = data.data;
 
-
     categoryContainer.innerText = ''
     categories.forEach((category) => {
         const a = document.createElement('a');
@@ -33,8 +38,7 @@ const loadCategories = async (isSort) => {
         a.onclick = (e) => {
             e.target.parentElement.querySelector('.tab-active').classList.remove('tab-active', 'bg-primary-color', 'text-white', 'border-none', 'hover:bg-dark-primary-color')
             e.target.classList.add('tab-active', 'bg-primary-color', 'text-white', 'border-none', 'hover:bg-dark-primary-color');
-            videoContainer.innerText = '';
-            noContentContainer.innerText = '';
+            clearScreen();
             loadVideos(category.category_id, isSort)
         };
         categoryContainer.appendChild(a);
@@ -53,8 +57,6 @@ const loadVideos = async (categoryId, isSort) => {
     const res = await fetch(`https://openapi.programming-hero.com/api/videos/category/${categoryId}`)
     const data = await res.json();
     const videos = data.data;
-
-    videoContainer.innerText = '';
 
     const noContentDiv = document.createElement('div');
     noContentDiv.innerHTML = `
